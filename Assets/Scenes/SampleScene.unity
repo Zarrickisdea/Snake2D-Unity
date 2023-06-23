@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 823698674}
   - component: {fileID: 823698673}
   m_Layer: 0
-  m_Name: Spanwer
+  m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,8 +216,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edge: {fileID: 1847234982}
   level: {fileID: 65484907}
-  edgeTile: {fileID: 0}
-  levelTile: {fileID: 0}
+  edgeTile: {fileID: 11400000, guid: 62d700ada7c44464492bc6b559309f58, type: 2}
+  levelTile: {fileID: 11400000, guid: 70c0ed8f5ffd90448a8589f113f5320f, type: 2}
 --- !u!4 &823698674
 Transform:
   m_ObjectHideFlags: 0
@@ -286,7 +286,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 401
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -310,7 +310,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163933626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -59, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
