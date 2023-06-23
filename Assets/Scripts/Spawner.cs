@@ -5,16 +5,18 @@ using UnityEngine.Tilemaps;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private Tilemap edge;
-    [SerializeField] private Tilemap level;
+    [SerializeField] private Tilemap[] levels;
     [SerializeField] private Tile edgeTile;
     [SerializeField] private Tile levelTile;
     private BoundsInt levelArea;
     private BoundsInt edgeArea;
+    private int index;
 
     void Start()
     {
         edgeArea = edge.cellBounds;
-        levelArea = level.cellBounds;
+        index = Random.Range(0, 2);
+        levelArea = levels[index].cellBounds;
         Spawn();
     }
 
@@ -40,15 +42,15 @@ public class Spawner : MonoBehaviour
             }
         }
 
-        SpawnHorizontalTiles(availableLevelPositions);
+        SpawnTiles(availableLevelPositions);
     }
 
 
-    private void SpawnHorizontalTiles(List<Vector3Int> availablePositions)
+    private void SpawnTiles(List<Vector3Int> availablePositions)
     {
         foreach (Vector3Int position in availablePositions)
         {
-            if (level.HasTile(position))
+            if (levels[index].HasTile(position))
             {
                 continue;
             }
@@ -59,16 +61,16 @@ public class Spawner : MonoBehaviour
                 continue;
             }
 
-            int randomSize = Random.Range(2, 4);
+            int randomSize = Random.Range(1, 3);
             for (int i = 0; i < randomSize; i++)
             {
-                Vector3Int adjacentPosition = new Vector3Int(position.x, position.y + i, position.z);
+                Vector3Int adjacentPosition = new Vector3Int(position.x + i, position.y, position.z);
                 if (!availablePositions.Contains(adjacentPosition))
                 {
                     continue;
                 }
 
-                level.SetTile(adjacentPosition, levelTile);
+                levels[index].SetTile(adjacentPosition, levelTile);
             }
         }
     }
