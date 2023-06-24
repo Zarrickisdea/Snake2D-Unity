@@ -12,6 +12,19 @@ public class Snake : MonoBehaviour
         SetSnake();
     }
 
+    private void FixedUpdate()
+    {
+        for (int i = segments.Count - 1; i > 0; i--)
+        {
+            segments[i].position = segments[i - 1].position;
+        }
+
+        float x = Mathf.Round(transform.position.x) + 2.0f;
+        float y = Mathf.Round(transform.position.y) + 0;
+
+        transform.position = new Vector2(x, y);
+    }
+
     private void SetSnake()
     {
         for (int i = 1; i < segments.Count; i++)
@@ -30,9 +43,8 @@ public class Snake : MonoBehaviour
 
     private void Grow()
     {
-        Vector3 offset = new Vector3(16.0f, 0.0f, 0.0f);
-        Vector3 nextPartPosition = segments[segments.Count - 1].position + offset;
-        Transform snakePart = Instantiate(snakeSegment, nextPartPosition, Quaternion.identity);
+        Transform snakePart = Instantiate(snakeSegment);
+        snakePart.position = segments[segments.Count - 1].position;
         segments.Add(snakePart);
     }
 }
