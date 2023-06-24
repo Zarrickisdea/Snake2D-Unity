@@ -8,7 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] levels;
     [SerializeField] private Tile edgeTile;
     [SerializeField] private Tile levelTile;
-    [SerializeField] private GameObject snake;
+    [SerializeField] private Transform snakeSegment;
     private Tilemap edgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
@@ -52,21 +52,19 @@ public class Spawner : MonoBehaviour
             }
         }
 
-        SpawnTiles(availableLevelPositions);
-        SpawnSnakeHead(availableSpawnPositions);
+        SpawnTiles();
+        SpawnSnake();
     }
 
-    private void SpawnSnakeHead(List<Vector3> availableSpawnPositions)
+    private void SpawnSnake()
     {
-        int randomIndex = Random.Range(0, availableSpawnPositions.Count);
-        Vector3 spawnPosition = availableSpawnPositions[randomIndex];
-        Instantiate(snake, spawnPosition, Quaternion.identity);
-        Debug.Log(availableSpawnPositions[randomIndex]);
-    }
+        Vector3 spawnPosition = GetRandomSpawnPosition();
+        Instantiate(snakeSegment, spawnPosition, Quaternion.identity);
+}
 
-    private void SpawnTiles(List<Vector3Int> availablePositions)
+    private void SpawnTiles()
     {
-        foreach (Vector3Int position in availablePositions)
+        foreach (Vector3Int position in availableLevelPositions)
         {
             if (levelGrid.HasTile(position))
             {
@@ -85,7 +83,7 @@ public class Spawner : MonoBehaviour
             for (int i = 0; i < randomSize; i++)
             {
                 Vector3Int adjacentPosition = new Vector3Int(position.x + i, position.y, position.z);
-                if (!availablePositions.Contains(adjacentPosition))
+                if (!availableLevelPositions.Contains(adjacentPosition))
                 {
                     continue;
                 }
@@ -93,6 +91,12 @@ public class Spawner : MonoBehaviour
                 levelGrid.SetTile(adjacentPosition, levelTile);
             }
         }
+    }
+
+    public Vector3 GetRandomSpawnPosition()
+    {
+        int randomIndex = Random.Range(0, availableSpawnPositions.Count);
+        return availableSpawnPositions[randomIndex];
     }
 
     private bool IsEdgeCell(Vector3Int position)
