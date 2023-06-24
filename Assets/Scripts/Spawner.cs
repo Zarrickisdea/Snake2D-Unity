@@ -4,51 +4,71 @@ using UnityEngine.Tilemaps;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private Tilemap edge;
-    [SerializeField] private Tilemap level;
+    [SerializeField] private GameObject edge;
+    [SerializeField] private GameObject[] levels;
     [SerializeField] private Tile edgeTile;
     [SerializeField] private Tile levelTile;
+    [SerializeField] private GameObject snake;
+    private Tilemap edgeGrid;
+    private Tilemap levelGrid;
     private BoundsInt levelArea;
     private BoundsInt edgeArea;
+    private int index;
+    private List<Vector3Int> availableEdgePositions = new List<Vector3Int>();
+    private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
+    private List<Vector3> availableSpawnPositions = new List<Vector3>();
 
-    void Start()
+    private void Awake()
     {
-        edgeArea = edge.cellBounds;
-        levelArea = level.cellBounds;
+        edgeGrid = Instantiate(edge).GetComponentInChildren<Tilemap>();
+
+        index = Random.Range(0, levels.Length);
+        levelGrid = Instantiate(levels[index]).GetComponentInChildren<Tilemap>();
+    }
+
+    private void Start()
+    {
+        edgeArea = edgeGrid.cellBounds;
+        levelArea = levelGrid.cellBounds;
         Spawn();
     }
 
     private void Spawn()
     {
-        List<Vector3Int> availableEdgePositions = new List<Vector3Int>();
-        List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
-
         foreach (Vector3Int position in edgeArea.allPositionsWithin)
         {
             if (IsEdgeCell(position))
             {
-                edge.SetTile(position, edgeTile);
+                edgeGrid.SetTile(position, edgeTile);
                 availableEdgePositions.Add(position);
             }
         }
 
         foreach (Vector3Int position in levelArea.allPositionsWithin)
         {
-            if (!edge.HasTile(position))
+            if (!edgeGrid.HasTile(position))
             {
                 availableLevelPositions.Add(position);
             }
         }
 
-        SpawnHorizontalTiles(availableLevelPositions);
+        SpawnTiles(availableLevelPositions);
+        SpawnSnakeHead(availableSpawnPositions);
     }
 
+    private void SpawnSnakeHead(List<Vector3> availableSpawnPositions)
+    {
+        int randomIndex = Random.Range(0, availableSpawnPositions.Count);
+        Vector3 spawnPosition = availableSpawnPositions[randomIndex];
+        Instantiate(snake, spawnPosition, Quaternion.identity);
+        Debug.Log(availableSpawnPositions[randomIndex]);
+    }
 
-    private void SpawnHorizontalTiles(List<Vector3Int> availablePositions)
+    private void SpawnTiles(List<Vector3Int> availablePositions)
     {
         foreach (Vector3Int position in availablePositions)
         {
-            if (level.HasTile(position))
+            if (levelGrid.HasTile(position))
             {
                 continue;
             }
@@ -56,19 +76,21 @@ public class Spawner : MonoBehaviour
             bool spawnSingleSpace = Random.value < 0.5f;
             if (spawnSingleSpace)
             {
+                Vector3 spawnTemp = levelGrid.GetCellCenterWorld(position);
+                availableSpawnPositions.Add(spawnTemp);
                 continue;
             }
 
-            int randomSize = Random.Range(2, 4);
+            int randomSize = Random.Range(1, 3);
             for (int i = 0; i < randomSize; i++)
             {
-                Vector3Int adjacentPosition = new Vector3Int(position.x, position.y + i, position.z);
+                Vector3Int adjacentPosition = new Vector3Int(position.x + i, position.y, position.z);
                 if (!availablePositions.Contains(adjacentPosition))
                 {
                     continue;
                 }
 
-                level.SetTile(adjacentPosition, levelTile);
+                levelGrid.SetTile(adjacentPosition, levelTile);
             }
         }
     }
