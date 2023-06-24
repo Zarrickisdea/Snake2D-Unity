@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 9078931729135123688}
   - component: {fileID: 9078931729135123695}
   m_Layer: 0
-  m_Name: LevelGrid
+  m_Name: HorizontalLevelGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
