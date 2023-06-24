@@ -158,7 +158,7 @@ MonoBehaviour:
   - {fileID: 2170680362774614967, guid: 327b745d90add9644b675d7075546a12, type: 3}
   edgeTile: {fileID: 11400000, guid: 62d700ada7c44464492bc6b559309f58, type: 2}
   levelTile: {fileID: 11400000, guid: 70c0ed8f5ffd90448a8589f113f5320f, type: 2}
-  snake: {fileID: 3662920179890401961, guid: 25f4664f278ec0344b35911c45d019a2, type: 3}
+  snakeSegment: {fileID: 3662920179890401943, guid: 25f4664f278ec0344b35911c45d019a2, type: 3}
 --- !u!4 &823698674
 Transform:
   m_ObjectHideFlags: 0
@@ -210,7 +210,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
