@@ -18,6 +18,7 @@ public static class GameBounds
 
         foreach (Vector3 position in availableEdgePositions)
         {
+            // the 36.0f is the approximate distance from center of the edgeTile after scaling
             if (position.x < left)
                 left = position.x + 36.0f;
             if (position.x > right)
