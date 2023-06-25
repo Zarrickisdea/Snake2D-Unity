@@ -63,6 +63,12 @@ public class Snake : MonoBehaviour
         }
     }
 
+    public void Pause(InputAction.CallbackContext value)
+    {
+        isPaused = !isPaused;
+
+    }
+
     private void FixedUpdate()
     {
         if (isPaused)
@@ -122,5 +128,19 @@ public class Snake : MonoBehaviour
         Transform snakePart = segments[segments.Count - 1].transform;
         segments.RemoveAt(segments.Count - 1);
         Destroy(snakePart.gameObject);
+    }
+
+    public void BurnSnake()
+    {
+        foreach (Transform segment in segments)
+        {
+            if (segment != null)
+            {
+                Destroy(segment.gameObject);
+            }
+        }
+
+        segments.Clear();
+        Destroy(gameObject);
     }
 }

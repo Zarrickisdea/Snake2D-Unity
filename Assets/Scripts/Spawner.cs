@@ -7,17 +7,19 @@ using UnityEngine.Tilemaps;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject edge;
+    [SerializeField] private GameObject[] edge;
     [SerializeField] private GameObject[] levels;
     [SerializeField] private Tile edgeTile;
     [SerializeField] private Tile levelTile;
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
     [SerializeField] private float spawnInterval;
-    private Tilemap edgeGrid;
+    private Tilemap horizontalEdgeGrid;
+    private Tilemap verticalEdgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
-    private BoundsInt edgeArea;
+    private BoundsInt horizontalEdgeArea;
+    private BoundsInt verticalEdgeArea;
     private int index;
     private Transform currentFood;
     private List<Vector3> availableEdgePositions = new List<Vector3>();
@@ -26,17 +28,22 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-        edgeGrid = Instantiate(edge).GetComponentInChildren<Tilemap>();
+        horizontalEdgeGrid = Instantiate(edge[0]).GetComponentInChildren<Tilemap>();
+        verticalEdgeGrid = Instantiate(edge[1]).GetComponentInChildren<Tilemap>();
 
         index = Random.Range(0, levels.Length);
         levelGrid = Instantiate(levels[index]).GetComponentInChildren<Tilemap>();
+        horizontalEdgeArea = horizontalEdgeGrid.cellBounds;
+        verticalEdgeArea = verticalEdgeGrid.cellBounds;
+        levelArea = levelGrid.cellBounds;
+        Spawn();
+        GameBounds.InitializeBounds(availableEdgePositions);
     }
 
     private void Start()
     {
-        edgeArea = edgeGrid.cellBounds;
-        levelArea = levelGrid.cellBounds;
-        Spawn();
+        SpawnTiles();
+        SpawnSnake();
         StartCoroutine(SpawnFood());
     }
 
@@ -63,27 +70,33 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        foreach (Vector3Int position in edgeArea.allPositionsWithin)
+        foreach (Vector3Int position in horizontalEdgeArea.allPositionsWithin)
         {
-            if (IsEdgeCell(position))
+            if (IsEdgeCellY(position))
             {
-                edgeGrid.SetTile(position, edgeTile);
-                Vector3 edgeTemp = edgeGrid.GetCellCenterWorld(position);
+                horizontalEdgeGrid.SetTile(position, edgeTile);
+                Vector3 edgeTemp = horizontalEdgeGrid.GetCellCenterWorld(position);
+                availableEdgePositions.Add(edgeTemp);
+            }
+        }
+
+        foreach (Vector3Int position in verticalEdgeArea.allPositionsWithin)
+        {
+            if (IsEdgeCellX(position))
+            {
+                verticalEdgeGrid.SetTile(position, edgeTile);
+                Vector3 edgeTemp = verticalEdgeGrid.GetCellCenterWorld(position);
                 availableEdgePositions.Add(edgeTemp);
             }
         }
 
         foreach (Vector3Int position in levelArea.allPositionsWithin)
         {
-            if (!edgeGrid.HasTile(position))
+            if (!horizontalEdgeGrid.HasTile(position) && !verticalEdgeGrid.HasTile(position))
             {
                 availableLevelPositions.Add(position);
             }
         }
-
-        SpawnTiles();
-        GameBounds.InitializeBounds(availableEdgePositions);
-        SpawnSnake();
     }
 
     private void SpawnSnake()
@@ -138,8 +151,13 @@ public class Spawner : MonoBehaviour
         return availableSpawnPositions[randomIndex];
     }
 
-    private bool IsEdgeCell(Vector3Int position)
+    private bool IsEdgeCellX(Vector3Int position)
     {
-        return position.x == edgeArea.xMin || position.x == edgeArea.xMax - 1 || position.y == edgeArea.yMin || position.y == edgeArea.yMax - 1;
+        return position.x == horizontalEdgeArea.xMin || position.x == horizontalEdgeArea.xMax - 1;
+    }
+
+    private bool IsEdgeCellY(Vector3Int position)
+    {
+        return position.y == verticalEdgeArea.yMin || position.y == verticalEdgeArea.yMax - 1;
     }
 }

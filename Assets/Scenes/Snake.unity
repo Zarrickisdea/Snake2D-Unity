@@ -152,7 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034aad7bb0bc4cc43b98f6bbe3732cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edge: {fileID: 6770725626369044441, guid: 37d7314ae85ecbc46980b4cd5ab7ea06, type: 3}
+  edge:
+  - {fileID: 6770725626369044441, guid: 37d7314ae85ecbc46980b4cd5ab7ea06, type: 3}
+  - {fileID: 6770725626369044441, guid: 83a9f41f93c9a564c813f70a39e1e2f3, type: 3}
   levels:
   - {fileID: 9078931729135123694, guid: 0ed81466e32beec499b9e638ec63a499, type: 3}
   - {fileID: 2170680362774614967, guid: 327b745d90add9644b675d7075546a12, type: 3}

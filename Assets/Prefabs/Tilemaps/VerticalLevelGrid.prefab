@@ -57,6 +57,7 @@ GameObject:
   - component: {fileID: 2170680363611146807}
   - component: {fileID: 2170680363611146804}
   - component: {fileID: 2170680363611146806}
+  - component: {fileID: 4938419086732420741}
   m_Layer: 0
   m_Name: Level2
   m_TagString: Untagged
@@ -181,7 +182,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -206,3 +207,15 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
+--- !u!114 &4938419086732420741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2170680363611146794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff9c1fc6cc1eb8948a744a5417cd88ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
