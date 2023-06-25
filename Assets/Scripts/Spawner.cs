@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Tile levelTile;
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
-    [SerializeField] private float spawnInterval = 30f;
+    [SerializeField] private float spawnInterval;
     private Tilemap edgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
@@ -94,11 +94,11 @@ public class Spawner : MonoBehaviour
         PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
         PlayerInput player2 = PlayerInput.Instantiate(snakeHead[1], controlScheme: "Keyboard2");
 
-        player1.transform.position = spawn1;
-        player2.transform.position = spawn2;
-
         InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
         player2.user.ActivateControlScheme("Keyboard2");
+
+        player1.transform.position = spawn1;
+        player2.transform.position = spawn2;
     }
 
     private void SpawnTiles()

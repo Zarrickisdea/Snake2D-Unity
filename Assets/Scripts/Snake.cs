@@ -12,10 +12,15 @@ public class Snake : MonoBehaviour
     private List<Transform> segments = new List<Transform>();
 
     private PlayerInput playerInput;
+    private bool isPaused = true;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void Start()
+    {
         SetSnake();
     }
 
@@ -33,21 +38,38 @@ public class Snake : MonoBehaviour
     {
         if (context.action.name == "Move")
         {
-            Vector2 moveVector = context.ReadValue<Vector2>();
-            if (moveVector.magnitude > 0.1f)
+            if (isPaused)
             {
-                if (Mathf.Approximately(moveVector.x, -currentDirection.x) || Mathf.Approximately(moveVector.y, -currentDirection.y))
+                Vector2 moveVector = context.ReadValue<Vector2>();
+                if (moveVector.magnitude > 0.1f)
                 {
-                    // Invalid move, ignore it
-                    return;
+                    currentDirection = moveVector.normalized;
+                    isPaused = false;
                 }
-                currentDirection = moveVector;
+            }
+            else
+            {
+                Vector2 moveVector = context.ReadValue<Vector2>();
+                if (moveVector.magnitude > 0.1f)
+                {
+                    if (Mathf.Approximately(moveVector.x, -currentDirection.x) || Mathf.Approximately(moveVector.y, -currentDirection.y))
+                    {
+                        // Invalid move, ignore it
+                        return;
+                    }
+                    currentDirection = moveVector.normalized;
+                }
             }
         }
     }
 
     private void FixedUpdate()
     {
+        if (isPaused)
+        {
+            return;
+        }
+
         lastDirection = currentDirection;
         Vector2 movement = currentDirection * moveSpeed;
 
@@ -88,10 +110,17 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private void Grow()
+    public void Grow()
     {
         Transform snakePart = Instantiate(snakeSegment);
         snakePart.position = segments[segments.Count - 1].position;
         segments.Add(snakePart);
+    }
+
+    public void Reduce()
+    {
+        Transform snakePart = segments[segments.Count - 1].transform;
+        segments.RemoveAt(segments.Count - 1);
+        Destroy(snakePart.gameObject);
     }
 }

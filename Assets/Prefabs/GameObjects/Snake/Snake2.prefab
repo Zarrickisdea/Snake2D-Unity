@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakeSize: 2
-  snakeSegment: {fileID: 3662920179890401943, guid: 17b266acce1ccd94aa0ed79b6696396b, type: 3}
+  snakeSegment: {fileID: 3662920179890401943, guid: 89a5873822ff05b49af6db32e257e69b, type: 3}
   moveSpeed: 12
 --- !u!114 &-3026945473646960512
 MonoBehaviour:
