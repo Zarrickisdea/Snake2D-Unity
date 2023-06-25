@@ -1,5 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.Tilemaps;
 
 public class Spawner : MonoBehaviour
@@ -8,12 +12,15 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] levels;
     [SerializeField] private Tile edgeTile;
     [SerializeField] private Tile levelTile;
-    [SerializeField] private Transform snakeSegment;
+    [SerializeField] private GameObject[] snakeHead;
+    [SerializeField] private Transform[] food;
+    [SerializeField] private float spawnInterval = 30f;
     private Tilemap edgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
     private BoundsInt edgeArea;
     private int index;
+    private Transform currentFood;
     private List<Vector3Int> availableEdgePositions = new List<Vector3Int>();
     private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
     private List<Vector3> availableSpawnPositions = new List<Vector3>();
@@ -31,6 +38,28 @@ public class Spawner : MonoBehaviour
         edgeArea = edgeGrid.cellBounds;
         levelArea = levelGrid.cellBounds;
         Spawn();
+        StartCoroutine(SpawnFood());
+    }
+
+    private IEnumerator SpawnFood()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnInterval);
+
+            if (food.Length == 0 || availableSpawnPositions.Count == 0)
+                continue;
+
+            if (currentFood != null)
+            {
+                Destroy(currentFood.gameObject);
+            }
+
+            Transform randomFoodPrefab = food[Random.Range(0, food.Length)];
+            Vector3 randomSpawnPosition = availableSpawnPositions[Random.Range(0, availableSpawnPositions.Count)];
+
+            currentFood = Instantiate(randomFoodPrefab, randomSpawnPosition, Quaternion.identity);
+        }
     }
 
     private void Spawn()
@@ -58,9 +87,18 @@ public class Spawner : MonoBehaviour
 
     private void SpawnSnake()
     {
-        Vector3 spawnPosition = GetRandomSpawnPosition();
-        Instantiate(snakeSegment, spawnPosition, Quaternion.identity);
-}
+        Vector3 spawn1 = GetRandomSpawnPosition();
+        Vector3 spawn2 = GetRandomSpawnPosition();
+
+        PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
+        PlayerInput player2 = PlayerInput.Instantiate(snakeHead[1], controlScheme: "Keyboard2");
+
+        player1.transform.position = spawn1;
+        player2.transform.position = spawn2;
+
+        InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
+        player2.user.ActivateControlScheme("Keyboard2");
+    }
 
     private void SpawnTiles()
     {
