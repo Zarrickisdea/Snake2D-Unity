@@ -6,8 +6,9 @@ public class Snake : MonoBehaviour
 {
     [SerializeField] private int snakeSize;
     [SerializeField] Transform snakeSegment;
-    private Vector2 currentDirection = Vector2.right;
     [SerializeField] private float moveSpeed;
+    private Vector2 currentDirection = Vector2.right;
+    private Vector2 lastDirection;
     private List<Transform> segments = new List<Transform>();
 
     private void Awake()
@@ -34,6 +35,7 @@ public class Snake : MonoBehaviour
 
     private void FixedUpdate()
     {
+        lastDirection = currentDirection;
         Vector2 movement = currentDirection * moveSpeed;
         for (int i = segments.Count - 1; i > 0; i--)
         {
@@ -42,6 +44,16 @@ public class Snake : MonoBehaviour
 
         float x = Mathf.Round(transform.position.x) + movement.x;
         float y = Mathf.Round(transform.position.y) + movement.y;
+
+        if (x < GameBounds.Left)
+            x = GameBounds.Right;
+        else if (x > GameBounds.Right)
+            x = GameBounds.Left;
+
+        if (y < GameBounds.Bottom)
+            y = GameBounds.Top;
+        else if (y > GameBounds.Top)
+            y = GameBounds.Bottom;
 
         transform.position = new Vector2(x, y);
     }

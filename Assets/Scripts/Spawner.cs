@@ -21,7 +21,7 @@ public class Spawner : MonoBehaviour
     private BoundsInt edgeArea;
     private int index;
     private Transform currentFood;
-    private List<Vector3Int> availableEdgePositions = new List<Vector3Int>();
+    private List<Vector3> availableEdgePositions = new List<Vector3>();
     private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
     private List<Vector3> availableSpawnPositions = new List<Vector3>();
 
@@ -69,7 +69,8 @@ public class Spawner : MonoBehaviour
             if (IsEdgeCell(position))
             {
                 edgeGrid.SetTile(position, edgeTile);
-                availableEdgePositions.Add(position);
+                Vector3 edgeTemp = edgeGrid.GetCellCenterWorld(position);
+                availableEdgePositions.Add(edgeTemp);
             }
         }
 
@@ -82,6 +83,7 @@ public class Spawner : MonoBehaviour
         }
 
         SpawnTiles();
+        GameBounds.InitializeBounds(availableEdgePositions);
         SpawnSnake();
     }
 
