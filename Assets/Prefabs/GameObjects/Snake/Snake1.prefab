@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeSize: 2
   snakeSegment: {fileID: 3662920179890401943, guid: 17b266acce1ccd94aa0ed79b6696396b, type: 3}
-  moveSpeed: 2
+  moveSpeed: 12
 --- !u!114 &1205544150894968730
 MonoBehaviour:
   m_ObjectHideFlags: 0

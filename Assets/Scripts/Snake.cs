@@ -50,10 +50,10 @@ public class Snake : MonoBehaviour
     {
         lastDirection = currentDirection;
         Vector2 movement = currentDirection * moveSpeed;
+
         for (int i = segments.Count - 1; i > 0; i--)
         {
-            Vector2 newPosition = (Vector2)segments[i - 1].position - movement.normalized * 16.0f;
-            segments[i].position = newPosition;
+            segments[i].position = segments[i - 1].position;
         }
 
         float x = Mathf.Round(transform.position.x) + movement.x;
@@ -70,23 +70,6 @@ public class Snake : MonoBehaviour
             y = GameBounds.Bottom;
 
         transform.position = new Vector2(x, y);
-
-        if (currentDirection == Vector2.up)
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        }
-        else if (currentDirection == Vector2.right)
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-        }
-        else if (currentDirection == Vector2.down)
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-        }
-        else if (currentDirection == Vector2.left)
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-        }
     }
 
     private void SetSnake()
