@@ -7,6 +7,8 @@ public static class GameBounds
     private static float right;
     private static float top;
     private static float bottom;
+    private static float horizontalEdgeTileSize = 36.0f;
+    //private static float verticalEdgeTileSize = 40.0f;
 
     public static void InitializeBounds(List<Vector3> availableEdgePositions)
     {
@@ -18,15 +20,15 @@ public static class GameBounds
 
         foreach (Vector3 position in availableEdgePositions)
         {
-            // the 36.0f is the approximate distance from center of the edgeTile after scaling
+            // the edgeTileSize is the approximate distance from center of the edgeTile after scaling
             if (position.x < left)
-                left = position.x + 36.0f;
+                left = position.x;
             if (position.x > right)
-                right = position.x - 36.0f;
+                right = position.x;
             if (position.y > top)
-                top = position.y - 36.0f;
+                top = position.y - horizontalEdgeTileSize;
             if (position.y < bottom)
-                bottom = position.y + 36.0f;
+                bottom = position.y + horizontalEdgeTileSize;
         }
     }
 

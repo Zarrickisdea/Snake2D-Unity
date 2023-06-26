@@ -9,7 +9,7 @@ public class Spawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] edge;
     [SerializeField] private GameObject[] levels;
-    [SerializeField] private Tile edgeTile;
+    [SerializeField] private Tile[] edgeTiles;
     [SerializeField] private Tile levelTile;
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
@@ -74,7 +74,7 @@ public class Spawner : MonoBehaviour
         {
             if (IsEdgeCellY(position))
             {
-                horizontalEdgeGrid.SetTile(position, edgeTile);
+                horizontalEdgeGrid.SetTile(position, edgeTiles[0]);
                 Vector3 edgeTemp = horizontalEdgeGrid.GetCellCenterWorld(position);
                 availableEdgePositions.Add(edgeTemp);
             }
@@ -84,7 +84,7 @@ public class Spawner : MonoBehaviour
         {
             if (IsEdgeCellX(position))
             {
-                verticalEdgeGrid.SetTile(position, edgeTile);
+                verticalEdgeGrid.SetTile(position, edgeTiles[1]);
                 Vector3 edgeTemp = verticalEdgeGrid.GetCellCenterWorld(position);
                 availableEdgePositions.Add(edgeTemp);
             }
