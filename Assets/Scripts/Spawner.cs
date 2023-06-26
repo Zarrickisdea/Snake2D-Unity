@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
@@ -14,6 +15,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
     [SerializeField] private float spawnInterval;
+    [SerializeField] private TextMeshProUGUI redScore;
+    [SerializeField] private TextMeshProUGUI greenScore;
+    [SerializeField] private TextMeshProUGUI foodTimer;
     private Tilemap horizontalEdgeGrid;
     private Tilemap verticalEdgeGrid;
     private Tilemap levelGrid;
@@ -21,6 +25,7 @@ public class Spawner : MonoBehaviour
     private BoundsInt horizontalEdgeArea;
     private BoundsInt verticalEdgeArea;
     private int index;
+    private float timer;
     private Transform currentFood;
     private List<Vector3> availableEdgePositions = new List<Vector3>();
     private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
@@ -33,9 +38,12 @@ public class Spawner : MonoBehaviour
 
         index = Random.Range(0, levels.Length);
         levelGrid = Instantiate(levels[index]).GetComponentInChildren<Tilemap>();
+
         horizontalEdgeArea = horizontalEdgeGrid.cellBounds;
         verticalEdgeArea = verticalEdgeGrid.cellBounds;
+
         levelArea = levelGrid.cellBounds;
+
         Spawn();
         GameBounds.InitializeBounds(availableEdgePositions);
     }
@@ -44,6 +52,7 @@ public class Spawner : MonoBehaviour
     {
         SpawnTiles();
         SpawnSnake();
+        timer = spawnInterval;
         StartCoroutine(SpawnFood());
     }
 
@@ -61,7 +70,7 @@ public class Spawner : MonoBehaviour
                 Destroy(currentFood.gameObject);
             }
 
-            Transform randomFoodPrefab = food[Random.Range(0, food.Length)];
+            Transform randomFoodPrefab = (Random.value < 0.3f) ? food[1] : food[0];
             Vector3 randomSpawnPosition = availableSpawnPositions[Random.Range(0, availableSpawnPositions.Count)];
 
             currentFood = Instantiate(randomFoodPrefab, randomSpawnPosition, Quaternion.identity);
@@ -110,6 +119,9 @@ public class Spawner : MonoBehaviour
         InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
         player2.user.ActivateControlScheme("Keyboard2");
 
+        player1.GetComponent<Snake>().SetTextObject(redScore);
+        player2.GetComponent<Snake>().SetTextObject(greenScore);
+
         player1.transform.position = spawn1;
         player2.transform.position = spawn2;
     }
@@ -142,6 +154,20 @@ public class Spawner : MonoBehaviour
 
                 levelGrid.SetTile(adjacentPosition, levelTile);
             }
+        }
+    }
+
+    private void Update()
+    {
+        if (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            timer = Mathf.Max(timer, 0f);
+            foodTimer.text = "Food spawns in:\n" + timer.ToString("F1"); // Display the timer string with one decimal place
+        }
+        else
+        {
+            timer = spawnInterval;
         }
     }
 

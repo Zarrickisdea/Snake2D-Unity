@@ -103,6 +103,7 @@ MonoBehaviour:
   snakeSize: 2
   snakeSegment: {fileID: 3662920179890401943, guid: 89a5873822ff05b49af6db32e257e69b, type: 3}
   moveSpeed: 6
+  text: {fileID: 0}
 --- !u!114 &-3026945473646960512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +145,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 206b5a97-c605-455d-947a-99239d433a6e
     m_ActionName: Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4811490425051521976}
+        m_TargetAssemblyTypeName: Snake, Assembly-CSharp
+        m_MethodName: Pause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1ed9d20e-4336-461c-bd7f-83bc498d0dec
+    m_ActionName: Player/Pause[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard2
   m_DefaultActionMap: Player

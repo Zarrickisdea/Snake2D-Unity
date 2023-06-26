@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,8 @@ public class Snake : MonoBehaviour
     private Vector2 currentDirection = Vector2.zero;
     private Vector2 lastDirection;
     private List<Transform> segments = new List<Transform>();
+    private TextMeshProUGUI text;
+    private int score;
 
     private PlayerInput playerInput;
     private bool isPaused = true;
@@ -69,6 +72,11 @@ public class Snake : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        text.text = "Score:\n" + score.ToString();
+    }
+
     private void FixedUpdate()
     {
         if (isPaused)
@@ -114,6 +122,8 @@ public class Snake : MonoBehaviour
         {
             Grow();
         }
+
+        score = 0;
     }
 
     public void Grow()
@@ -121,6 +131,8 @@ public class Snake : MonoBehaviour
         Transform snakePart = Instantiate(snakeSegment);
         snakePart.position = segments[segments.Count - 1].position;
         segments.Add(snakePart);
+
+        score += 1;
     }
 
     public void Reduce()
@@ -128,6 +140,15 @@ public class Snake : MonoBehaviour
         Transform snakePart = segments[segments.Count - 1].transform;
         segments.RemoveAt(segments.Count - 1);
         Destroy(snakePart.gameObject);
+
+        if (score > 0)
+        {
+            score -= 1;
+        }
+        else
+        {
+            score = 0;
+        }
     }
 
     public void BurnSnake()
@@ -142,5 +163,10 @@ public class Snake : MonoBehaviour
 
         segments.Clear();
         Destroy(gameObject);
+    }
+
+    public void SetTextObject(TextMeshProUGUI textobj)
+    {
+        text = textobj;
     }
 }
