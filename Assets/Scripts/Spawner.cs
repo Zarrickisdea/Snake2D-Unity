@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
@@ -8,36 +7,43 @@ using UnityEngine.Tilemaps;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject edge;
+    [SerializeField] private GameObject[] edge;
     [SerializeField] private GameObject[] levels;
-    [SerializeField] private Tile edgeTile;
+    [SerializeField] private Tile[] edgeTiles;
     [SerializeField] private Tile levelTile;
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
-    [SerializeField] private float spawnInterval = 30f;
-    private Tilemap edgeGrid;
+    [SerializeField] private float spawnInterval;
+    private Tilemap horizontalEdgeGrid;
+    private Tilemap verticalEdgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
-    private BoundsInt edgeArea;
+    private BoundsInt horizontalEdgeArea;
+    private BoundsInt verticalEdgeArea;
     private int index;
     private Transform currentFood;
-    private List<Vector3Int> availableEdgePositions = new List<Vector3Int>();
+    private List<Vector3> availableEdgePositions = new List<Vector3>();
     private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
     private List<Vector3> availableSpawnPositions = new List<Vector3>();
 
     private void Awake()
     {
-        edgeGrid = Instantiate(edge).GetComponentInChildren<Tilemap>();
+        horizontalEdgeGrid = Instantiate(edge[0]).GetComponentInChildren<Tilemap>();
+        verticalEdgeGrid = Instantiate(edge[1]).GetComponentInChildren<Tilemap>();
 
         index = Random.Range(0, levels.Length);
         levelGrid = Instantiate(levels[index]).GetComponentInChildren<Tilemap>();
+        horizontalEdgeArea = horizontalEdgeGrid.cellBounds;
+        verticalEdgeArea = verticalEdgeGrid.cellBounds;
+        levelArea = levelGrid.cellBounds;
+        Spawn();
+        GameBounds.InitializeBounds(availableEdgePositions);
     }
 
     private void Start()
     {
-        edgeArea = edgeGrid.cellBounds;
-        levelArea = levelGrid.cellBounds;
-        Spawn();
+        SpawnTiles();
+        SpawnSnake();
         StartCoroutine(SpawnFood());
     }
 
@@ -64,25 +70,33 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        foreach (Vector3Int position in edgeArea.allPositionsWithin)
+        foreach (Vector3Int position in horizontalEdgeArea.allPositionsWithin)
         {
-            if (IsEdgeCell(position))
+            if (IsEdgeCellY(position))
             {
-                edgeGrid.SetTile(position, edgeTile);
-                availableEdgePositions.Add(position);
+                horizontalEdgeGrid.SetTile(position, edgeTiles[0]);
+                Vector3 edgeTemp = horizontalEdgeGrid.GetCellCenterWorld(position);
+                availableEdgePositions.Add(edgeTemp);
+            }
+        }
+
+        foreach (Vector3Int position in verticalEdgeArea.allPositionsWithin)
+        {
+            if (IsEdgeCellX(position))
+            {
+                verticalEdgeGrid.SetTile(position, edgeTiles[1]);
+                Vector3 edgeTemp = verticalEdgeGrid.GetCellCenterWorld(position);
+                availableEdgePositions.Add(edgeTemp);
             }
         }
 
         foreach (Vector3Int position in levelArea.allPositionsWithin)
         {
-            if (!edgeGrid.HasTile(position))
+            if (!horizontalEdgeGrid.HasTile(position) && !verticalEdgeGrid.HasTile(position))
             {
                 availableLevelPositions.Add(position);
             }
         }
-
-        SpawnTiles();
-        SpawnSnake();
     }
 
     private void SpawnSnake()
@@ -93,11 +107,11 @@ public class Spawner : MonoBehaviour
         PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
         PlayerInput player2 = PlayerInput.Instantiate(snakeHead[1], controlScheme: "Keyboard2");
 
-        player1.transform.position = spawn1;
-        player2.transform.position = spawn2;
-
         InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
         player2.user.ActivateControlScheme("Keyboard2");
+
+        player1.transform.position = spawn1;
+        player2.transform.position = spawn2;
     }
 
     private void SpawnTiles()
@@ -137,8 +151,13 @@ public class Spawner : MonoBehaviour
         return availableSpawnPositions[randomIndex];
     }
 
-    private bool IsEdgeCell(Vector3Int position)
+    private bool IsEdgeCellX(Vector3Int position)
     {
-        return position.x == edgeArea.xMin || position.x == edgeArea.xMax - 1 || position.y == edgeArea.yMin || position.y == edgeArea.yMax - 1;
+        return position.x == horizontalEdgeArea.xMin || position.x == horizontalEdgeArea.xMax - 1;
+    }
+
+    private bool IsEdgeCellY(Vector3Int position)
+    {
+        return position.y == verticalEdgeArea.yMin || position.y == verticalEdgeArea.yMax - 1;
     }
 }
