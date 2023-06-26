@@ -13,6 +13,7 @@ public class Snake : MonoBehaviour
     private List<Transform> segments = new List<Transform>();
     private TextMeshProUGUI text;
     private int score;
+    private Rigidbody2D rb;
 
     private PlayerInput playerInput;
     private bool isPaused = true;
@@ -20,6 +21,8 @@ public class Snake : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        rb = GetComponent<Rigidbody2D>();
+        rb.simulated = false;
     }
 
     private void Start()
@@ -48,6 +51,7 @@ public class Snake : MonoBehaviour
                 {
                     currentDirection = moveVector.normalized;
                     isPaused = false;
+                    rb.simulated = true;
                 }
             }
             else
@@ -69,7 +73,14 @@ public class Snake : MonoBehaviour
     public void Pause(InputAction.CallbackContext value)
     {
         isPaused = !isPaused;
-
+        if (isPaused)
+        {
+            rb.simulated = false;
+        }
+        else
+        {
+            rb.simulated = true;
+        }
     }
 
     private void Update()

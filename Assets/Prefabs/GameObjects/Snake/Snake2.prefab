@@ -102,8 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeSize: 2
   snakeSegment: {fileID: 3662920179890401943, guid: 89a5873822ff05b49af6db32e257e69b, type: 3}
-  moveSpeed: 6
-  text: {fileID: 0}
+  moveSpeed: 12
 --- !u!114 &-3026945473646960512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +189,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 19.2, y: 19.2}
+  m_Size: {x: 10, y: 10}
   m_EdgeRadius: 0
 --- !u!50 &8477986489386409686
 Rigidbody2D:
