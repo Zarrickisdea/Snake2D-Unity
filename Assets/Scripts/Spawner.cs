@@ -18,6 +18,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private TextMeshProUGUI redScore;
     [SerializeField] private TextMeshProUGUI greenScore;
     [SerializeField] private TextMeshProUGUI foodTimer;
+    [SerializeField] private TextMeshProUGUI[] instructions;
     private Tilemap horizontalEdgeGrid;
     private Tilemap verticalEdgeGrid;
     private Tilemap levelGrid;
