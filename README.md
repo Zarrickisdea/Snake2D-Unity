@@ -6,7 +6,9 @@ This is a 2D snake game developed in Unity. The game offers both single-player a
 
 
 
-https://github.com/Zarrickisdea/Snake2D-Unity/assets/77843021/c25f4d99-15d6-4c36-90d0-1fa94a0de03b
+
+
+https://github.com/Zarrickisdea/Snake2D-Unity/assets/77843021/cb607b81-e1b6-41d8-93d4-40f19c35a90f
 
 
 ## Gameplay
