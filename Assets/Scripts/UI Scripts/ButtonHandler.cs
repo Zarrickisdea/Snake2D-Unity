@@ -3,8 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class ButtonHandler : MonoBehaviour
 {
-    public int snakesToSpawn;
+    [SerializeField] private int snakesToSpawn;
 
+    private void Awake()
+    {
+        AudioManager.Instance.PlayBGM(AudioManager.BackgroundSound.Menu);
+    }
     public void SetNumberOfSnakes()
     {
         GameHandler.NumberOfSnakes = snakesToSpawn;
@@ -13,6 +17,7 @@ public class ButtonHandler : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+        AudioManager.Instance.PlayBGM(AudioManager.BackgroundSound.Gameplay);
     }
 }
 

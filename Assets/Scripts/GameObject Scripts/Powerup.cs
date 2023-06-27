@@ -14,7 +14,7 @@ public class Powerup : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Snake snake = collision.GetComponent<Snake>();
-        int powerupIndex;
+        int powerupIndex; // done to get the correct UI prompt
         if (snake != null)
         {
             switch (powerupType)

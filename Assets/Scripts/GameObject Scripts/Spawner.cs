@@ -95,6 +95,8 @@ public class Spawner : MonoBehaviour
 
     private void SpawnSnake(int snakeNumber)
     {
+        // for local multiplayer with the same input device, unity does not assign the second user the same device
+        // so it has to be done manually
         if (snakeNumber == 2)
         {
             Vector3 spawn1 = GetRandomSpawnPosition();
@@ -122,8 +124,6 @@ public class Spawner : MonoBehaviour
             player1.GetComponent<Snake>().SetTextObject(redScore, redPower);
             player1.transform.position = spawn1;
         }
-
-        Debug.Log(snakeNumber);
     }
 
     private void SpawnTiles()
@@ -208,7 +208,7 @@ public class Spawner : MonoBehaviour
         {
             timer -= Time.deltaTime;
             timer = Mathf.Max(timer, 0f);
-            foodTimer.text = "Food spawns in:\n" + timer.ToString("F1"); // Display the timer string with one decimal place
+            foodTimer.text = "Food spawns in:\n" + timer.ToString("F1");
         }
         else
         {

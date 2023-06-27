@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class Snake : MonoBehaviour
         powerText.enabled = false;
     }
 
+	// new Input System assignments
 	private void OnEnable()
 	{
 		playerInput.onActionTriggered += OnActionTriggered;
@@ -58,7 +60,7 @@ public class Snake : MonoBehaviour
 				{
 					currentDirection = moveVector.normalized;
 					isPaused = false;
-					rb.simulated = true;
+					rb.simulated = true; // to remove collision with the snake segments
 				}
 			}
 			else
@@ -160,7 +162,8 @@ public class Snake : MonoBehaviour
 		snakePart.position = segments[segments.Count - 1].position;
 		segments.Add(snakePart);
 		
-		score = score + (1 * scoreMultiplier);
+		score = score + (1 * scoreMultiplier); // multipler is always one unless the correct powerup is picked up
+		AudioManager.Instance.PlayEffect(AudioManager.Effects.Grow);
 	}
 
 	public void Reduce()
@@ -177,7 +180,9 @@ public class Snake : MonoBehaviour
 		{
 			score = 0;
 		}
-	}
+
+        AudioManager.Instance.PlayEffect(AudioManager.Effects.Reduce);
+    }
 
 	public void BurnSnake()
 	{
@@ -191,6 +196,9 @@ public class Snake : MonoBehaviour
 
 		segments.Clear();
 		Destroy(gameObject);
+
+		AudioManager.Instance.PlayEffect(AudioManager.Effects.Burn);
+		SceneManager.LoadScene("GameOver");
 	}
 
 	public void SetTextObject(TextMeshProUGUI text1obj, TextMeshProUGUI text2obj)
@@ -203,13 +211,15 @@ public class Snake : MonoBehaviour
 	{
 		isPowered = true;
 		currentPower = powerIndex;
-		StartCoroutine(ActivatePhasePowerCoroutine());
+        AudioManager.Instance.PlayEffect(AudioManager.Effects.Phase);
+        StartCoroutine(ActivatePhasePowerCoroutine());
 	}
 
 	public void SpeedPower(int powerIndex)
 	{
 		isPowered = true;
         currentPower = powerIndex;
+        AudioManager.Instance.PlayEffect(AudioManager.Effects.Speed);
         StartCoroutine(ActivateSpeedPowerCoroutine());
 	}
 
@@ -217,6 +227,7 @@ public class Snake : MonoBehaviour
 	{
 		isPowered = true;
         currentPower = powerIndex;
+        AudioManager.Instance.PlayEffect(AudioManager.Effects.Double);
         StartCoroutine(ActivateMultiplyPowerCoroutine());
 	}
 
@@ -266,7 +277,7 @@ public class Snake : MonoBehaviour
         scoreMultiplier = 1;
     }
 
-
+	// different UI prompt for each powerup
     private string[] powerupTexts = new string[]
 	{
 		"Snake is now faster for",
