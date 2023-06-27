@@ -14,19 +14,24 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Tile levelTile;
     [SerializeField] private GameObject[] snakeHead;
     [SerializeField] private Transform[] food;
-    [SerializeField] private float spawnInterval;
+    [SerializeField] private Transform[] powerup;
+    [SerializeField] private float foodSpawnInterval;
     [SerializeField] private TextMeshProUGUI redScore;
     [SerializeField] private TextMeshProUGUI greenScore;
     [SerializeField] private TextMeshProUGUI foodTimer;
+    [SerializeField] private TextMeshProUGUI redPower;
+    [SerializeField] private TextMeshProUGUI greenPower;
+
     private Tilemap horizontalEdgeGrid;
     private Tilemap verticalEdgeGrid;
     private Tilemap levelGrid;
     private BoundsInt levelArea;
     private BoundsInt horizontalEdgeArea;
     private BoundsInt verticalEdgeArea;
-    private int index;
+
     private float timer;
-    private Transform currentFood;
+    private bool isGame = true;
+
     private List<Vector3> availableEdgePositions = new List<Vector3>();
     private List<Vector3Int> availableLevelPositions = new List<Vector3Int>();
     private List<Vector3> availableSpawnPositions = new List<Vector3>();
@@ -36,7 +41,7 @@ public class Spawner : MonoBehaviour
         horizontalEdgeGrid = Instantiate(edge[0]).GetComponentInChildren<Tilemap>();
         verticalEdgeGrid = Instantiate(edge[1]).GetComponentInChildren<Tilemap>();
 
-        index = Random.Range(0, levels.Length);
+        int index = Random.Range(0, levels.Length);
         levelGrid = Instantiate(levels[index]).GetComponentInChildren<Tilemap>();
 
         horizontalEdgeArea = horizontalEdgeGrid.cellBounds;
@@ -51,30 +56,10 @@ public class Spawner : MonoBehaviour
     private void Start()
     {
         SpawnTiles();
-        SpawnSnake();
-        timer = spawnInterval;
+        SpawnSnake(GameHandler.NumberOfSnakes);
+        timer = foodSpawnInterval;
         StartCoroutine(SpawnFood());
-    }
-
-    private IEnumerator SpawnFood()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval);
-
-            if (food.Length == 0 || availableSpawnPositions.Count == 0)
-                continue;
-
-            if (currentFood != null)
-            {
-                Destroy(currentFood.gameObject);
-            }
-
-            Transform randomFoodPrefab = (Random.value < 0.3f) ? food[1] : food[0];
-            Vector3 randomSpawnPosition = availableSpawnPositions[Random.Range(0, availableSpawnPositions.Count)];
-
-            currentFood = Instantiate(randomFoodPrefab, randomSpawnPosition, Quaternion.identity);
-        }
+        StartCoroutine(SpawnPowerup());
     }
 
     private void Spawn()
@@ -108,22 +93,37 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void SpawnSnake()
+    private void SpawnSnake(int snakeNumber)
     {
-        Vector3 spawn1 = GetRandomSpawnPosition();
-        Vector3 spawn2 = GetRandomSpawnPosition();
+        if (snakeNumber == 2)
+        {
+            Vector3 spawn1 = GetRandomSpawnPosition();
+            Vector3 spawn2 = GetRandomSpawnPosition();
 
-        PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
-        PlayerInput player2 = PlayerInput.Instantiate(snakeHead[1], controlScheme: "Keyboard2");
+            PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
+            PlayerInput player2 = PlayerInput.Instantiate(snakeHead[1], controlScheme: "Keyboard2");
 
-        InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
-        player2.user.ActivateControlScheme("Keyboard2");
+            InputUser.PerformPairingWithDevice(Keyboard.current, player2.user);
+            player2.user.ActivateControlScheme("Keyboard2");
 
-        player1.GetComponent<Snake>().SetTextObject(redScore);
-        player2.GetComponent<Snake>().SetTextObject(greenScore);
+            player1.GetComponent<Snake>().SetTextObject(redScore, redPower);
+            player2.GetComponent<Snake>().SetTextObject(greenScore, greenPower);
 
-        player1.transform.position = spawn1;
-        player2.transform.position = spawn2;
+            player1.transform.position = spawn1;
+            player2.transform.position = spawn2;
+        }
+
+        else if (snakeNumber == 1) 
+        {
+            greenScore.enabled = false;
+            greenPower.enabled = false;
+            Vector3 spawn1 = GetRandomSpawnPosition();
+            PlayerInput player1 = PlayerInput.Instantiate(snakeHead[0], controlScheme: "Keyboard");
+            player1.GetComponent<Snake>().SetTextObject(redScore, redPower);
+            player1.transform.position = spawn1;
+        }
+
+        Debug.Log(snakeNumber);
     }
 
     private void SpawnTiles()
@@ -157,6 +157,51 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    private IEnumerator SpawnFood()
+    {
+        Transform currentFood = null;
+        while (isGame)
+        {
+            yield return new WaitForSeconds(foodSpawnInterval);
+
+            if (food.Length == 0 || availableSpawnPositions.Count == 0)
+                continue;
+
+            if (currentFood != null)
+            {
+                Destroy(currentFood.gameObject);
+            }
+
+            Transform randomFoodPrefab = (Random.value < 0.3f) ? food[1] : food[0];
+            Vector3 randomSpawnPosition = GetRandomSpawnPosition();
+
+            currentFood = Instantiate(randomFoodPrefab, randomSpawnPosition, Quaternion.identity);
+        }
+    }
+
+    private IEnumerator SpawnPowerup()
+    {
+        float powerupSpawnInterval = Random.Range(10.0f, 16.0f);
+        Transform currentPowerup = null;
+        while (isGame)
+        {
+            yield return new WaitForSeconds(powerupSpawnInterval);
+
+            if (powerup.Length == 0 || availableSpawnPositions.Count == 0)
+                continue;
+
+            if (currentPowerup != null)
+            {
+                Destroy(currentPowerup.gameObject);
+            }
+
+            Transform randomPowerupPrefab = powerup[Random.Range(0, powerup.Length)];
+            Vector3 randomSpawnPosition = GetRandomSpawnPosition();
+
+            currentPowerup = Instantiate(randomPowerupPrefab, randomSpawnPosition, Quaternion.identity);
+        }
+    }
+
     private void Update()
     {
         if (timer > 0f)
@@ -167,7 +212,7 @@ public class Spawner : MonoBehaviour
         }
         else
         {
-            timer = spawnInterval;
+            timer = foodSpawnInterval;
         }
     }
 
